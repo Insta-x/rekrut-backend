@@ -5,6 +5,7 @@ const userRouter = require('./routes/user')
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const session = require('express-session');
+const cors = require('cors');
 
 const User = require('./models/user');
 
@@ -30,6 +31,7 @@ const sessionConfig = {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(session(sessionConfig));
+app.use(cors());
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -56,6 +58,6 @@ app.use((err, req, res, next) => {  // Error handling
     res.status(statusCode).json(err)
 })
 
-app.listen(3000, () => {
-    console.log("LISTENING ON PORT 3000");
+app.listen(3001, () => {
+    console.log("LISTENING ON PORT 3001");
 })

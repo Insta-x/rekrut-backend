@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "devStart": "nodemon server.js"
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -20,9 +20,10 @@
     "nodemon": "^2.0.15"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.2",
     "express-session": "^1.17.2",
-    "mongoose": "^6.2.1",
+    "mongoose": "^6.2.3",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^6.1.0"

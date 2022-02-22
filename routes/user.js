@@ -1,17 +1,14 @@
-const express = require('express')
-const router = express.Router()
+const passport = require('passport');
+const users = require('../controllers/users');
 
+const express = require('express');
+const router = express.Router();
 
-router.get('/login', (req, res) => {  // TODO login a user
-    res.send('login')
-})
+router.post('/login', users.login);     // logs user in
 
-router.post('/register', (req, res) => {  // TODO register a new user
-    res.send('register')
-})
+router.post('/register', users.register);       // registers user
 
-router
-    .route('/:id')
+router.route('/:id')
     .get((req, res) => {  // TODO get a profile detail with id from database
         res.send('test')
     })
@@ -22,5 +19,4 @@ router
         res.send('test')
     })
 
-
-module.exports = router
+module.exports = router;

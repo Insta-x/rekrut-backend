@@ -7,7 +7,6 @@ module.exports.register = async (req, res, next) => {
         const { password, email } = req.body;
         const user = new User({ email });
         await User.register(user, password);
-        console.log(user);
         res.status(200).json(user);
     } catch (e) {
         return next(e);

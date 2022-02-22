@@ -1,8 +1,8 @@
-const express = require('express');
 const passport = require('passport');
 const users = require('../controllers/users');
-const router = express.Router();
 
+const express = require('express');
+const router = express.Router();
 
 router.post('/login', users.login);     // logs user in
 

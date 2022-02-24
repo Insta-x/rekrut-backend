@@ -1,7 +1,6 @@
 const express = require('express');
 const users = require('../controllers/users');
 
-const express = require('express');
 const router = express.Router();
 
 router.post('/login', users.login);     // logs user in

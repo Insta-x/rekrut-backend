@@ -3,11 +3,16 @@ const Schema = mongoose.Schema;
 const passportLocalMongoose = require('passport-local-mongoose');
 
 const userSchema = new Schema({
+    name: String,
+    phone: String,
+    bankAccount: String,
+    category: String,
     email: {
         type: String,
         required: true,
         unique: true
     },
+    bio: String,
     _worker: {
         type: Schema.Types.ObjectId,
         ref: 'Worker'
@@ -15,6 +20,10 @@ const userSchema = new Schema({
     _client: {
         type: Schema.Types.ObjectId,
         ref: 'Client'
+    },
+    review: {
+        type: Schema.Types.ObjectId,
+        ref: 'Review'
     }
 })
 

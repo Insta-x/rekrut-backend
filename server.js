@@ -29,6 +29,7 @@ const sessionConfig = {
     }
 }
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session(sessionConfig));
 app.use(cors());
@@ -54,7 +55,7 @@ app.post('/hire', (req, res) => {  // TODO client hire an applicant of a job
 
 app.use((err, req, res, next) => {  // Error handling
     const { statusCode = 500 } = err;
-    if (!err.message) err.message = 'Oh No, Something Went Wrong!'
+    if (!err.message) err.message = 'Oh No, Something Went Wrong!';
     res.status(statusCode).json(err)
 })
 

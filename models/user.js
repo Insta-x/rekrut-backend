@@ -12,9 +12,7 @@ const userSchema = new Schema({
         required: true,
         unique: true
     },
-    bio: {
-        type: String
-    },
+    bio: String,
     _worker: {
         type: Schema.Types.ObjectId,
         ref: 'Worker'

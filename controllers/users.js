@@ -1,6 +1,8 @@
 const passport = require('passport');
 const ExpressError = require('../utils/ExpressError');
 const User = require('../models/user');
+const Worker = require('../models/worker');
+const Client = require('../models/client');
 
 const changeUsername = err => err.message.replace('username', 'email');
 
@@ -8,6 +10,16 @@ module.exports.register = async (req, res, next) => {
     try {
         const { password } = req.body;
         const user = new User({ ...req.body });
+        if (req.body.isWorker && req.body.isWorker === true) {
+            const worker = new Worker(req.body);
+            await worker.save();
+            user.worker = worker;
+        }
+        else {
+            const client = new Client(req.body);
+            user.client = client;
+            await client.save();
+        }
         await User.register(user, password);
         const { hash, salt, ...userData } = user._doc;
         res.status(200).json(userData);
@@ -27,3 +39,38 @@ module.exports.login = (req, res, next) => {
         })
     })(req, res, next);
 }
+
+module.exports.logout = (req, res, next) => {
+    req.logout();
+    res.status(200).json('Successfully logged out');
+}
+
+module.exports.showUser = async (req, res, next) => {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    user.worker
+        ? await user.populate('worker')
+        : await user.populate('client')
+    res.status(200).json(user);
+}
+
+module.exports.updateUser = async (req, res, next) => {
+    const { id } = req.params;
+    const user = await User.findByIdAndUpdate(id, { ...req.body });
+    if (user.worker) {
+        const worker = await Worker.findByIdAndUpdate(user.worker._id, { ...req.body });
+        await worker.save();
+    }
+    else {
+        const client = await Client.findByIdAndUpdate(user.client._id, { ...req.body });
+        await client.save();
+    }
+    res.status(200).json(user);
+}
+
+module.exports.deleteUser = async (req, res, next) => {
+    const { id } = req.params;
+    await User.findByIdAndDelete(id);
+    res.status(200).json('User deleted!');
+}
+

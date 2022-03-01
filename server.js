@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const jobRouter = require('./routes/job')
 const userRouter = require('./routes/user')
+const reviewRouter = require('./routes/review')
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const session = require('express-session');
@@ -42,6 +43,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use('/job', jobRouter)
 app.use('/user', userRouter)
+app.use('/review', reviewRouter)
 
 // temporary location
 app.post('/apply', (req, res) => {  // TODO worker apply for a job

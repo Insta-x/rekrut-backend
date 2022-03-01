@@ -45,9 +45,6 @@ router
             return next(new ExpressError(e, 400));
         }
     })
-    .put(async (req, res) => {  // TODO update a job detail with id from database
-        res.send('job update')
-    })
     .delete(async (req, res, next) => { // TODO delete a job with id from database
         try {
             await Job.findByIdAndDelete(req.params.id)

@@ -11,6 +11,7 @@ const jobSchema = new Schema({
     salary: String,
     responsibility: String,
     qualification: String,
+    status: Number,
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User'

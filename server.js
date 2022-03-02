@@ -14,7 +14,7 @@ const app = express();
 // connect to mongo
 main().catch(err => console.log(err));
 async function main() {
-    await mongoose.connect('mongodb://localhost:27017/idt');
+    await mongoose.connect('mongodb://127.0.0.1:27017/idt');
     console.log('DATABASE CONNECTED');
 }
 

@@ -3,13 +3,6 @@ const ExpressError = require('../utils/ExpressError');
 const Job = require('../models/job')
 const router = express.Router()
 
-const hiring = 0
-const waiting = 1
-const onProgress = 2
-const inReview = 3
-const done = 4
-
-
 router.get('/', async (req, res, next) => {  // TODO get jobs
     try {
         const jobs = await Job.find()
@@ -21,19 +14,7 @@ router.get('/', async (req, res, next) => {  // TODO get jobs
 })
 
 router.post('/', async (req, res, next) => {  // TODO create a new job
-    let job = new Job({
-        title : req.body.title,
-        detail : req.body.detail,
-        location : req.body.location,
-        jobType : req.body.jobType,
-        category : req.body.category,
-        salary : req.body.salary,
-        responsibility : req.body.responsibility,
-        qualification : req.body.qualification,
-        author : req.body.author,
-        status : hiring,
-    })
-    
+    let job = new Job({ ...req.body })
     try {
         job = await job.save();
         res.status(200).send(job);

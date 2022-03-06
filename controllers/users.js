@@ -47,7 +47,7 @@ module.exports.logout = (req, res, next) => {
 
 module.exports.showUser = async (req, res, next) => {
     const { id } = req.params;
-    const user = await User.findById(id);
+    const user = await User.findById(id).populate('review');
     user.worker
         ? await user.populate('worker')
         : await user.populate('client')

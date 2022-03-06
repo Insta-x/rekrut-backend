@@ -57,6 +57,7 @@ app.post('/hire', (req, res) => {  // TODO client hire an applicant of a job
 
 app.use((err, req, res, next) => {  // Error handling
     const { statusCode = 500 } = err;
+    console.dir(err);
     if (!err.message) err.message = 'Oh No, Something Went Wrong!';
     res.status(statusCode).json(err)
 })

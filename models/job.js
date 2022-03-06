@@ -19,19 +19,13 @@ const jobSchema = new Schema({
     registrants: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Worker'
+            ref: 'User'
         }
     ],
     chosen: {
         type: Schema.Types.ObjectId,
-        ref: 'Worker'
-    },
-    review: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Review'
-        }
-    ]
+        ref: 'User'
+    }
 })
 
 module.exports = mongoose.model('Job', jobSchema);

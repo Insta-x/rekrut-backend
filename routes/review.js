@@ -5,6 +5,6 @@ const { isLoggedIn } = require('../middleware');
 
 const router = express.Router();
 
-router.post('/', isLoggedIn, catchAsync(review.createReview));
+router.post('/:id', catchAsync(review.createReview));
 
 module.exports = router;

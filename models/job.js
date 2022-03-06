@@ -11,7 +11,11 @@ const jobSchema = new Schema({
     salary: String,
     responsibility: String,
     qualification: String,
-    status: Number,
+    status: {
+        type: String,
+        enum : ['HIRING', 'WAITING', 'ONGOING', 'REVIEWING', 'DONE'],
+        default: 'HIRING'
+    },
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User'

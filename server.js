@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== 'production')
+    require('dotenv').config();
+
 const express = require('express')
 const mongoose = require('mongoose')
 const jobRouter = require('./routes/job')
@@ -7,21 +10,36 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const session = require('express-session');
 const cors = require('cors');
+const MongoStore = require('connect-mongo');
 
 const User = require('./models/user');
 const ExpressError = require('./utils/ExpressError')
 
 const app = express();
 
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/idt';
+const secret = process.env.SECRET;
+
 // connect to mongo
 main().catch(err => console.log(err));
 async function main() {
-    await mongoose.connect('mongodb://127.0.0.1:27017/idt');
+    await mongoose.connect(dbUrl);
     console.log('DATABASE CONNECTED');
 }
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    secret,
+    touchAfter: 24 * 3600
+})
+
+store.on('error', e => {
+    console.log("SESSION STORE ERROR", e)
+})
+
 const sessionConfig = {
-    secret: 'changethislater',
+    store,
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {

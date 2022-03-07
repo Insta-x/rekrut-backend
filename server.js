@@ -19,6 +19,7 @@ const app = express();
 
 const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/idt';
 const secret = process.env.SECRET;
+const PORT = process.env.PORT || 3001;
 
 // connect to mongo
 main().catch(err => console.log(err));
@@ -84,6 +85,6 @@ app.use((err, req, res, next) => {  // Error handling
     res.status(statusCode).json(err)
 })
 
-app.listen(3001, () => {
-    console.log("LISTENING ON PORT 3001");
+app.listen(PORT, () => {
+    console.log(`LISTENING ON PORT ${PORT}`);
 })

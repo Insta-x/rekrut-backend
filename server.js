@@ -61,6 +61,10 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, User.authenticate()))
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.get('/', (req, res) => {
+    res.send('API Successfully Connected')
+})
+
 app.use('/job', jobRouter)
 app.use('/user', userRouter)
 app.use('/review', reviewRouter)

@@ -3,7 +3,6 @@ const User = require('../models/user');
 const Job = require('../models/job');
 
 module.exports.createReview = async (req, res, next) => {
-    console.log(req.user._id);
     const { id } = req.params;
     const review = new Review({ ...req.body });
     const job = await Job.findById(id);

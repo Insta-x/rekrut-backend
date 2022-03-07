@@ -2,12 +2,14 @@ const express = require('express')
 const mongoose = require('mongoose')
 const jobRouter = require('./routes/job')
 const userRouter = require('./routes/user')
+const reviewRouter = require('./routes/review')
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const session = require('express-session');
 const cors = require('cors');
 
 const User = require('./models/user');
+const ExpressError = require('./utils/ExpressError')
 
 const app = express();
 
@@ -42,6 +44,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use('/job', jobRouter)
 app.use('/user', userRouter)
+app.use('/review', reviewRouter)
 
 // temporary location
 app.post('/apply', (req, res) => {  // TODO worker apply for a job
@@ -51,6 +54,10 @@ app.post('/apply', (req, res) => {  // TODO worker apply for a job
 // temporary location
 app.post('/hire', (req, res) => {  // TODO client hire an applicant of a job
     res.send('hire')
+})
+
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page Not Found', 404));
 })
 
 app.use((err, req, res, next) => {  // Error handling

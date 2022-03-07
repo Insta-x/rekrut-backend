@@ -8,7 +8,19 @@ const clientSchema = new Schema({
             ref: 'Job'
         }
     ],
+    waiting: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Job'
+        }
+    ],
     ongoing: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Job'
+        }
+    ],
+    reviewing: [
         {
             type: Schema.Types.ObjectId,
             ref: 'Job'

@@ -21,7 +21,7 @@ module.exports = mongoose.model('Review', reviewSchema);
 {
     "body": "Did shit job but im rich",
     "rating": 3,
-    "author": 
+    "author": "6225a51cc82d9a2605d23f38"
 }
 
 */

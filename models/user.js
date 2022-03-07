@@ -34,10 +34,11 @@ const userSchema = new Schema({
 userSchema.plugin(passportLocalMongoose, { usernameField: 'email' });
 
 userSchema.post('findOneAndDelete', async function (doc) {
+    console.dir(doc);
     if (doc) {
         doc.worker
             ? await Worker.deleteOne(doc.worker)
-            : await Client.deleteOne(doc.worker)
+            : await Client.deleteOne(doc.client)
         await Review.deleteMany({
             _id: { $in: doc.reviews }
         })

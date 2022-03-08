@@ -22,6 +22,13 @@ module.exports.isClient = async (req, res, next) => {
     next();
 }
 
+module.exports.isWorker = async (req, res, next) => {
+    const user = await User.findById(req.user._id);
+    if (user.client) 
+        return next(new ExpressError('You must be a worker', 401));
+    next();
+}
+
 module.exports.isJobOwner = async (req, res, next) => {
     const { id } = req.params;
     const job = await Job.findById(id);

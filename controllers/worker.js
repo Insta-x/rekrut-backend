@@ -46,3 +46,17 @@ module.exports.declineJob = async (req, res, next) => {
     await job.save()
     res.status(200).json('Successfully declining job')
 }
+
+module.exports.finishJob = async (req, res, next) => {
+    const userWorker = await User.findById(req.user._id).populate('worker')
+    const jobId = req.body.job       // get job id by JSON
+    const job = await Job.findById(jobId).populate('author')
+    const userClient = job.author
+    userClient.client.ongoing.pull(jobId)
+    userClient.client.reviewing.push(jobId)
+    job.status = 'REVIEWING'
+    await userClient.client.save()
+    await userWorker.worker.save()
+    await job.save()
+    res.status(200).json('Successfully finishing job')
+}

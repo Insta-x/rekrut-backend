@@ -53,7 +53,7 @@ const sessionConfig = {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session(sessionConfig));
-app.use(cors());
+app.use(cors({origin: '*'}));
 
 app.use(passport.initialize());
 app.use(passport.session());

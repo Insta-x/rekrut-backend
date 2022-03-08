@@ -1,4 +1,4 @@
-if (process.env.NODE_ENV !== 'production')
+if (process.env.NODE_ENV === 'production')
     require('dotenv').config();
 
 const express = require('express')
@@ -18,13 +18,14 @@ const ExpressError = require('./utils/ExpressError')
 const app = express();
 
 const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/idt';
-const secret = process.env.SECRET;
+const secret = process.env.SECRET || 'thisisasecret';
+const PORT = process.env.PORT || 3001;
 
 // connect to mongo
 main().catch(err => console.log(err));
 async function main() {
     await mongoose.connect(dbUrl);
-    console.log('DATABASE CONNECTED');
+    console.log(`Connected to Database ${dbUrl}`);
 }
 
 const store = MongoStore.create({
@@ -60,6 +61,10 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, User.authenticate()))
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.get('/', (req, res) => {
+    res.send('API Successfully Connected')
+})
+
 app.use('/job', jobRouter)
 app.use('/user', userRouter)
 app.use('/review', reviewRouter)
@@ -84,6 +89,6 @@ app.use((err, req, res, next) => {  // Error handling
     res.status(statusCode).json(err)
 })
 
-app.listen(3001, () => {
-    console.log("LISTENING ON PORT 3001");
+app.listen(PORT, () => {
+    console.log(`LISTENING ON PORT ${PORT}`);
 })

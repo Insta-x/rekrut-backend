@@ -1,4 +1,4 @@
-if (process.env.NODE_ENV !== 'production')
+if (process.env.NODE_ENV === 'production')
     require('dotenv').config();
 
 const express = require('express')
@@ -18,14 +18,14 @@ const ExpressError = require('./utils/ExpressError')
 const app = express();
 
 const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/idt';
-const secret = process.env.SECRET;
+const secret = process.env.SECRET || 'thisisasecret';
 const PORT = process.env.PORT || 3001;
 
 // connect to mongo
 main().catch(err => console.log(err));
 async function main() {
     await mongoose.connect(dbUrl);
-    console.log('DATABASE CONNECTED');
+    console.log(`Connected to Database ${dbUrl}`);
 }
 
 const store = MongoStore.create({

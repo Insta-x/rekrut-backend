@@ -6,6 +6,8 @@ const mongoose = require('mongoose')
 const jobRouter = require('./routes/job')
 const userRouter = require('./routes/user')
 const reviewRouter = require('./routes/review')
+const clientRouter = require('./routes/client')
+const workerRouter = require('./routes/worker')
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const session = require('express-session');
@@ -68,6 +70,8 @@ app.get('/', (req, res) => {
 app.use('/job', jobRouter)
 app.use('/user', userRouter)
 app.use('/review', reviewRouter)
+app.use('/client', clientRouter)
+app.use('/worker', workerRouter)
 
 // temporary location
 app.post('/apply', (req, res) => {  // TODO worker apply for a job

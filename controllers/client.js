@@ -7,7 +7,7 @@ module.exports.hire = async (req, res, next) => {
     const userClient = await User.findById(req.user._id).populate('client')
     const userWorker = await User.findById(req.body.worker).populate('worker')      // get worker id by JSON
     const jobId = req.body.job       // get job id by JSON
-    const job = Job.findById(jobId)
+    const job = await Job.findById(jobId)
     userClient.client.hiring.pull(jobId)
     userClient.client.waiting.push(jobId)
     userWorker.worker.applying.pull(jobId)
@@ -21,8 +21,9 @@ module.exports.hire = async (req, res, next) => {
 
 module.exports.reviewGood = async (req, res, next) => {
     const userClient = await User.findById(req.user._id).populate('client')
-    const userWorker = await User.findById(req.body.worker).populate('worker')      // get worker id by JSON
     const jobId = req.body.job       // get job id by JSON
+    const job = await Job.findById(jobId).populate('chosen')
+    const userWorker = await job.chosen.populate('worker')
     userClient.client.reviewing.pull(jobId)
     userClient.client.done.push(jobId)
     userWorker.worker.ongoing.pull(jobId)
@@ -36,8 +37,9 @@ module.exports.reviewGood = async (req, res, next) => {
 
 module.exports.reviewBad = async (req, res, next) => {
     const userClient = await User.findById(req.user._id).populate('client')
-    const userWorker = await User.findById(req.body.worker).populate('worker')      // get worker id by JSON
     const jobId = req.body.job       // get job id by JSON
+    const job = await Job.findById(jobId).populate('chosen')
+    const userWorker = await job.chosen.populate('worker')
     userClient.client.reviewing.pull(jobId)
     userClient.client.ongoing.push(jobId)
     job.status = 'ONGOING'

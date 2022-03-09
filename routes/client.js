@@ -1,9 +1,13 @@
 const express = require('express');
 const client = require('../controllers/client');
 const catchAsync = require('../utils/catchAsync');
-const { isLoggedIn, isUser, isClient } = require('../middleware');
+const { isLoggedIn, isClient } = require('../middleware');
 
 const router = express.Router();
+
+const isJobAuthor = async (req, res, next) => {
+    
+}
 
 router.post('/hire', isLoggedIn, isClient, catchAsync(client.hire))
 

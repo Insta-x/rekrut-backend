@@ -1,7 +1,7 @@
 const express = require('express');
 const worker = require('../controllers/worker');
 const catchAsync = require('../utils/catchAsync');
-const { isLoggedIn, isUser, isWorker } = require('../middleware');
+const { isLoggedIn, isWorker } = require('../middleware');
 
 const router = express.Router();
 

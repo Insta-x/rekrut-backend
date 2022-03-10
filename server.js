@@ -41,7 +41,7 @@ store.on('error', e => {
 const sessionConfig = {
     store,
     secret,
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
@@ -53,7 +53,7 @@ const sessionConfig = {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session(sessionConfig));
-app.use(cors({origin: '*'}));
+app.use(cors({origin:true, credentials: true}));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -63,6 +63,10 @@ passport.deserializeUser(User.deserializeUser());
 
 app.get('/', (req, res) => {
     res.send('API Successfully Connected')
+})
+
+app.get('/session', (req, res) => {
+    res.json(req.user);
 })
 
 app.use('/job', jobRouter)

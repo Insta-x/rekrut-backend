@@ -4,7 +4,7 @@ const Job = require('./models/job');
 
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated())
-        next(new ExpressError("You must log in first", 401));
+       return next(new ExpressError("You must log in first", 401));
     next();
 }
 

@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/', catchAsync(jobs.getAll))
 
-router.post('/', catchAsync(jobs.createJob))
+router.post('/', isLoggedIn, isClient, catchAsync(jobs.createJob))
 
 router.route('/:id')
     .get(catchAsync(jobs.showJob))

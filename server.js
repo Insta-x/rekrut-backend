@@ -38,18 +38,19 @@ store.on('error', e => {
     console.log("SESSION STORE ERROR", e)
 })
 
+app.set('trust proxy', 1);
 const sessionConfig = {
     store,
     secret,
-    resave: true,
+    resave: false,
     saveUninitialized: true,
     cookie: {
+        secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }
 
-app.enable('trust proxy');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session(sessionConfig));

@@ -19,8 +19,6 @@ module.exports.acceptJob = async (req, res, next) => {
     const jobId = req.body.job       // get job id by JSON
     const job = await Job.findById(jobId).populate('author')
     const userClient = await job.author.populate('client')
-    if(!req.user._id.equals(job.chosen))
-        return next(new ExpressError('Not the chosen one', 403))
     userWorker.worker.accepted.pull(jobId)
     userWorker.worker.ongoing.push(jobId)
     userClient.client.waiting.pull(jobId)
@@ -37,8 +35,6 @@ module.exports.declineJob = async (req, res, next) => {
     const jobId = req.body.job       // get job id by JSON
     const job = await Job.findById(jobId).populate('author')
     const userClient = await job.author.populate('client')
-    if(!req.user._id.equals(job.chosen))
-        return next(new ExpressError('Not the chosen one', 403))
     userWorker.worker.accepted.pull(jobId)
     userClient.client.waiting.pull(jobId)
     userClient.client.hiring.push(jobId)
@@ -56,8 +52,8 @@ module.exports.finishJob = async (req, res, next) => {
     const jobId = req.body.job       // get job id by JSON
     const job = await Job.findById(jobId).populate('author')
     const userClient = await job.author.populate('client')
-    if(!req.user._id.equals(job.chosen))
-        return next(new ExpressError('Not the chosen one', 403))
+    if(job.status != 'ONGOING')
+        return next(new ExpressError('Not an ongoing job', 403))
     userClient.client.ongoing.pull(jobId)
     userClient.client.reviewing.push(jobId)
     job.status = 'REVIEWING'

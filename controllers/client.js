@@ -28,9 +28,9 @@ module.exports.reviewGood = async (req, res, next) => {
     const userClient = await User.findById(req.user._id).populate('client')
     const jobId = req.body.job       // get job id by JSON
     const job = await Job.findById(jobId).populate('chosen')
-    const userWorker = await job.chosen.populate('worker')
     if(job.status != 'REVIEWING')
         return next(new ExpressError('Not reviewing', 403))
+    const userWorker = await job.chosen.populate('worker')
     userClient.client.reviewing.pull(jobId)
     userClient.client.done.push(jobId)
     userWorker.worker.ongoing.pull(jobId)
@@ -46,9 +46,9 @@ module.exports.reviewBad = async (req, res, next) => {
     const userClient = await User.findById(req.user._id).populate('client')
     const jobId = req.body.job       // get job id by JSON
     const job = await Job.findById(jobId).populate('chosen')
-    const userWorker = await job.chosen.populate('worker')
     if(job.status != 'REVIEWING')
         return next(new ExpressError('Not reviewing', 403))
+    const userWorker = await job.chosen.populate('worker')
     userClient.client.reviewing.pull(jobId)
     userClient.client.ongoing.push(jobId)
     job.status = 'ONGOING'

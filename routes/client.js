@@ -1,18 +1,14 @@
 const express = require('express');
 const client = require('../controllers/client');
 const catchAsync = require('../utils/catchAsync');
-const { isLoggedIn, isClient } = require('../middleware');
+const { isLoggedIn, isClient, isJobExists, isJobAuthor } = require('../middleware');
 
 const router = express.Router();
 
-const isJobAuthor = async (req, res, next) => {
-    
-}
+router.post('/hire', isLoggedIn, isClient, isJobExists, isJobAuthor, catchAsync(client.hire))
 
-router.post('/hire', isLoggedIn, isClient, catchAsync(client.hire))
+router.post('/review-good', isLoggedIn, isClient, isJobExists, isJobAuthor, catchAsync(client.reviewGood))
 
-router.post('/reviewgood', isLoggedIn, isClient, catchAsync(client.reviewGood))
-
-router.post('/reviewbad', isLoggedIn, isClient, catchAsync(client.reviewBad))
+router.post('/review-bad', isLoggedIn, isClient, isJobExists, isJobAuthor, catchAsync(client.reviewBad))
 
 module.exports = router

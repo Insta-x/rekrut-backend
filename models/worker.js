@@ -8,13 +8,19 @@ const workerSchema = new Schema({
             ref: 'Job'
         }
     ],
+    accepted: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Job'
+        }
+    ],
     ongoing: [
         {
             type: Schema.Types.ObjectId,
             ref: 'Job'
         }
     ],
-    hired: [
+    finished: [
         {
             type: Schema.Types.ObjectId,
             ref: 'Job'

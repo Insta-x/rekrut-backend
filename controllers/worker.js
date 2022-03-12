@@ -33,7 +33,7 @@ module.exports.acceptJob = async (req, res, next) => {
     userClient.client.waiting.pull(jobId)
     userClient.client.ongoing.push(jobId)
     job.status = 'ONGOING'
-    for (let regists in job.registrants){
+    for (let regists of job.registrants){
         if (!regists.equals(req.user._id))
             await pushNotif(
                 `Anda belum terpilih menjadi ${job.category} di ${job.title}. Jangan patah semangat ya!`,
@@ -46,7 +46,7 @@ module.exports.acceptJob = async (req, res, next) => {
         `Hore! Anda berhasil merekrut ${userWorker.name} sebagai ${job.category}.`,
         `/job/${jobId}`,
         'hired',
-        `${job.author}`
+        `${job.author._id}`
     )
     await userClient.client.save()
     await userWorker.worker.save()
@@ -69,7 +69,7 @@ module.exports.declineJob = async (req, res, next) => {
         `Kabar buruk! Anda gagal merekrut ${userWorker.name} sebagai ${job.category}.`,
         `/job/${jobId}`,
         'rejected',
-        `${job.author}`
+        `${job.author._id}`
     )
     await userClient.client.save()
     await userWorker.worker.save()
@@ -91,7 +91,7 @@ module.exports.finishJob = async (req, res, next) => {
         `Pekerjaan ${userWorker.name} sebagai ${job.category} telah selesai. Silahkan diperiksa kembali.`,
         `/job/${jobId}`,
         'done all',
-        `${job.author}`
+        `${job.author._id}`
     )
     await userClient.client.save()
     await userWorker.worker.save()

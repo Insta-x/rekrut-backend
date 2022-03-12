@@ -48,7 +48,7 @@ module.exports.logout = (req, res, next) => {
 
 module.exports.showUser = async (req, res, next) => {
     const { id } = req.params;
-    const user = await User.findById(id);
+    const user = await User.findById(id).populate('notif');
     if (user.worker) {
         await user.populate({
             path: 'worker',

@@ -53,7 +53,7 @@ module.exports.reviewGood = async (req, res, next) => {
         `Kerja anda di ${job.name} sebagai ${job.category} telah selesai. Berikan review anda!`,
         `/job/${jobId}`,
         'done all',
-        `${req.body.worker}`
+        `${job.chosen._id}`
     )
     await userClient.client.save()
     await userWorker.worker.save()
@@ -75,7 +75,7 @@ module.exports.reviewBad = async (req, res, next) => {
         `Hasil anda di ${job.name} sebagai ${job.category} masih belum selesai. Harap diperiksa lagi!`,
         `/job/${jobId}`,
         'rejected',
-        `${req.body.worker}`
+        `${job.chosen._id}`
     )
     await userClient.client.save()
     await userWorker.worker.save()

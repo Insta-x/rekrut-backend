@@ -1,6 +1,6 @@
 const Notif = require('../models/notif');
 const User = require('../models/user');
-const baseUrl = 'http://localhost:3001'
+const baseUrl = 'https://rekrut-id.herokuapp.com'
 
 module.exports.pushNotif = async (msg, url, type, userId) => {
     url = baseUrl + url;

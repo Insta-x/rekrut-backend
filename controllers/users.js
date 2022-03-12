@@ -53,33 +53,51 @@ module.exports.showUser = async (req, res, next) => {
         await user.populate({
             path: 'worker',
             populate: [
-                'applying',
-                'accepted',
-                'ongoing',
-                'finished'
+                {
+                    path: 'applying',
+                    populate: 'author'
+                },
+                {
+                    path: 'accepted',
+                    populate: 'author'
+                },
+                {
+                    path: 'ongoing',
+                    populate: 'author'
+                },
+                {
+                    path: 'finished',
+                    populate: 'author'
+                }
             ]
         });
-        await user.worker.populate('applying.author')
-        await user.worker.populate('accepted.author')
-        await user.worker.populate('ongoing.author')
-        await user.worker.populate('finished.author')
     }
     else {
         await user.populate({
             path: 'client',
             populate: [
-                'hiring',
-                'waiting',
-                'ongoing',
-                'reviewing',
-                'done'
+                {
+                    path: 'hiring',
+                    populate: 'author'
+                },
+                {
+                    path: 'waiting',
+                    populate: 'author'
+                },
+                {
+                    path: 'ongoing',
+                    populate: 'author'
+                },
+                {
+                    path: 'reviewing',
+                    populate: 'author'
+                },
+                {
+                    path: 'done',
+                    populate: 'author'
+                }
             ]
         })
-        await user.worker.populate('hiring.author')
-        await user.worker.populate('waiting.author')
-        await user.worker.populate('ongoing.author')
-        await user.worker.populate('reviewing.author')
-        await user.worker.populate('done.author')
     }
     res.status(200).json(user);
 }

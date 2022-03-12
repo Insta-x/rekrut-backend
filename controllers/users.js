@@ -59,6 +59,10 @@ module.exports.showUser = async (req, res, next) => {
                 'finished'
             ]
         });
+        await user.worker.populate('applying.author')
+        await user.worker.populate('accepted.author')
+        await user.worker.populate('ongoing.author')
+        await user.worker.populate('finished.author')
     }
     else {
         await user.populate({
@@ -71,6 +75,11 @@ module.exports.showUser = async (req, res, next) => {
                 'done'
             ]
         })
+        await user.worker.populate('hiring.author')
+        await user.worker.populate('waiting.author')
+        await user.worker.populate('ongoing.author')
+        await user.worker.populate('reviewing.author')
+        await user.worker.populate('done.author')
     }
     res.status(200).json(user);
 }

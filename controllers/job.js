@@ -4,7 +4,7 @@ const Client = require('../models/client');
 const ExpressError = require('../utils/ExpressError');
 
 module.exports.getAll = async (req, res, next) => {
-    const jobs = await Job.find()
+    const jobs = await Job.find().populate('author')
     res.status(200).json(jobs)
 }
 
@@ -20,9 +20,7 @@ module.exports.createJob = async (req, res, next) => {
 
 module.exports.showJob = async (req, res, next) => {
     const { id } = req.params;
-    const job = await Job.findById(id);
-    if (req.user && job.author.equals(req.user._id))
-        await job.populate('registrants')
+    const job = await Job.findById(id).populate('author').populate('registrants');
     res.status(200).json(job);
 }
 

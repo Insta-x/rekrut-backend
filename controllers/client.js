@@ -10,9 +10,9 @@ module.exports.hire = async (req, res, next) => {
     const jobId = req.body.job       // get job id by JSON
     const job = await Job.findById(jobId)
     if(job.status != 'HIRING')
-        return next(new ExpressError('Not hiring', 403))
+        return next(new ExpressError('Pendaftaran pekerjaan ini telah ditutup', 403))
     if(!job.registrants.includes(req.body.worker))
-        return next(new ExpressError('Not a registrants', 403))
+        return next(new ExpressError('Bukan pendaftar', 403))
     userClient.client.hiring.pull(jobId)
     userClient.client.waiting.push(jobId)
     userWorker.worker.applying.pull(jobId)
@@ -36,7 +36,7 @@ module.exports.reviewGood = async (req, res, next) => {
     const jobId = req.body.job       // get job id by JSON
     const job = await Job.findById(jobId).populate('chosen')
     if(job.status != 'REVIEWING')
-        return next(new ExpressError('Not reviewing', 403))
+        return next(new ExpressError('Anda tidak dapat melakukan ini', 403))
     const userWorker = await job.chosen.populate('worker')
     userClient.client.reviewing.pull(jobId)
     userClient.client.done.push(jobId)
@@ -66,7 +66,7 @@ module.exports.reviewBad = async (req, res, next) => {
     const jobId = req.body.job       // get job id by JSON
     const job = await Job.findById(jobId).populate('chosen')
     if(job.status != 'REVIEWING')
-        return next(new ExpressError('Not reviewing', 403))
+        return next(new ExpressError('Anda tidak dapat melakukan ini', 403))
     const userWorker = await job.chosen.populate('worker')
     userClient.client.reviewing.pull(jobId)
     userClient.client.ongoing.push(jobId)

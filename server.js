@@ -8,6 +8,7 @@ const userRouter = require('./routes/user')
 const reviewRouter = require('./routes/review')
 const clientRouter = require('./routes/client')
 const workerRouter = require('./routes/worker')
+const notificationRouter = require('./routes/notif')
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const session = require('express-session');
@@ -78,16 +79,7 @@ app.use('/user', userRouter)
 app.use('/review', reviewRouter)
 app.use('/client', clientRouter)
 app.use('/worker', workerRouter)
-
-// temporary location
-app.post('/apply', (req, res) => {  // TODO worker apply for a job
-    res.send('apply')
-})
-
-// temporary location
-app.post('/hire', (req, res) => {  // TODO client hire an applicant of a job
-    res.send('hire')
-})
+app.use('/notification', notificationRouter)
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));

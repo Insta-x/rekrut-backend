@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const Job = require('../models/job');
 const Client = require('../models/client');
+const { pushNotif } = require('../utils/pushNotif');
 const ExpressError = require('../utils/ExpressError');
 
 module.exports.hire = async (req, res, next) => {
@@ -19,6 +20,12 @@ module.exports.hire = async (req, res, next) => {
     job.status = 'WAITING'
     job.chosen = req.body.worker
     await userClient.client.save()
+    await pushNotif(
+        `Hore! Anda dipilih sebagai ${job.category} di ${job.title}. Segera lakukan konfirmasi!`,
+        `/job/${jobId}`,
+        'chosen',
+        `${req.body.worker}`
+    )
     await userWorker.worker.save()
     await job.save()
     res.status(200).json('Successfully hiring worker')
@@ -36,6 +43,18 @@ module.exports.reviewGood = async (req, res, next) => {
     userWorker.worker.ongoing.pull(jobId)
     userWorker.worker.finished.push(jobId)
     job.status = 'DONE'
+    await pushNotif(
+        `Kerja sama anda dengan ${userWorker.name} sebagai ${job.category} telah selesai. Berikan review anda!`,
+        `/job/${jobId}`,
+        'done all',
+        `${job.author}`
+    )
+    await pushNotif(
+        `Kerja anda di ${job.name} sebagai ${job.category} telah selesai. Berikan review anda!`,
+        `/job/${jobId}`,
+        'done all',
+        `${req.body.worker}`
+    )
     await userClient.client.save()
     await userWorker.worker.save()
     await job.save()
@@ -52,6 +71,12 @@ module.exports.reviewBad = async (req, res, next) => {
     userClient.client.reviewing.pull(jobId)
     userClient.client.ongoing.push(jobId)
     job.status = 'ONGOING'
+    await pushNotif(
+        `Hasil anda di ${job.name} sebagai ${job.category} masih belum selesai. Harap diperiksa lagi!`,
+        `/job/${jobId}`,
+        'rejected',
+        `${req.body.worker}`
+    )
     await userClient.client.save()
     await userWorker.worker.save()
     await job.save()

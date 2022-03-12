@@ -2,6 +2,7 @@ const User = require('../models/user');
 const Job = require('../models/job');
 const Client = require('../models/client');
 const ExpressError = require('../utils/ExpressError');
+const { pushNotif } = require('../utils/pushNotif');
 
 module.exports.apply = async (req, res, next) => {
     const userWorker = await User.findById(req.user._id).populate('worker')
@@ -9,7 +10,15 @@ module.exports.apply = async (req, res, next) => {
     const job = await Job.findById(jobId)
     if(job.registrants.includes(req.user._id))
         return next(new ExpressError('Already registrant', 403))
+    await pushNotif(
+        `Hei! Ada pekerja yang baru saja mendaftar sebagai ${job.category}.`,
+        `/job/${jobId}`,
+        'important',
+        `${job.author}`
+    );
+    userWorker.worker.applying.push(jobId)
     job.registrants.push(req.user._id)
+    await userWorker.worker.save()
     await job.save()
     res.status(200).json('Successfully applying to a job')
 }
@@ -24,6 +33,21 @@ module.exports.acceptJob = async (req, res, next) => {
     userClient.client.waiting.pull(jobId)
     userClient.client.ongoing.push(jobId)
     job.status = 'ONGOING'
+    for (let regists in job.registrants){
+        if (!regists.equals(req.user._id))
+            await pushNotif(
+                `Anda belum terpilih menjadi ${job.category} di ${job.title}. Jangan patah semangat ya!`,
+                `/job/${jobId}`,
+                'rejected',
+                `${regists}`
+            )
+    }
+    await pushNotif(
+        `Hore! Anda berhasil merekrut ${userWorker.name} sebagai ${job.category}.`,
+        `/job/${jobId}`,
+        'hired',
+        `${job.author}`
+    )
     await userClient.client.save()
     await userWorker.worker.save()
     await job.save()
@@ -41,6 +65,12 @@ module.exports.declineJob = async (req, res, next) => {
     job.status = 'HIRING'
     job.chosen = undefined
     job.registrants.pull(req.user._id)
+    await pushNotif(
+        `Kabar buruk! Anda gagal merekrut ${userWorker.name} sebagai ${job.category}.`,
+        `/job/${jobId}`,
+        'rejected',
+        `${job.author}`
+    )
     await userClient.client.save()
     await userWorker.worker.save()
     await job.save()
@@ -57,6 +87,12 @@ module.exports.finishJob = async (req, res, next) => {
     userClient.client.ongoing.pull(jobId)
     userClient.client.reviewing.push(jobId)
     job.status = 'REVIEWING'
+    await pushNotif(
+        `Pekerjaan ${userWorker.name} sebagai ${job.category} telah selesai. Silahkan diperiksa kembali.`,
+        `/job/${jobId}`,
+        'done all',
+        `${job.author}`
+    )
     await userClient.client.save()
     await userWorker.worker.save()
     await job.save()

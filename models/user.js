@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const passportLocalMongoose = require('passport-local-mongoose');
-const Client = require('../models/client');
-const Worker = require('../models/worker');
-const Review = require('../models/review');
+const Client = require('./client');
+const Worker = require('./worker');
+const Review = require('./review');
 
 const userSchema = new Schema({
     name: String,
@@ -16,6 +16,10 @@ const userSchema = new Schema({
         unique: true
     },
     bio: String,
+    notif: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Notification'
+    }],
     worker: {
         type: Schema.Types.ObjectId,
         ref: 'Worker'
@@ -34,7 +38,6 @@ const userSchema = new Schema({
 userSchema.plugin(passportLocalMongoose, { usernameField: 'email' });
 
 userSchema.post('findOneAndDelete', async function (doc) {
-    console.dir(doc);
     if (doc) {
         doc.worker
             ? await Worker.deleteOne(doc.worker)

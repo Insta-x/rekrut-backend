@@ -29,9 +29,10 @@ module.exports.register = async (req, res, next) => {
 }
 
 module.exports.login = (req, res, next) => {
-    passport.authenticate('local', function(err, user, info){
+    passport.authenticate('local', async function(err, user, info){
         if (err) return next(err);
         if (!user) return next(new ExpressError(changeUsername(info), 401));
+        await user.populate('notif')
         req.login(user, err => {
             if (err) return next(err);
             const { hash, salt, ...userData } = user._doc;
@@ -47,10 +48,30 @@ module.exports.logout = (req, res, next) => {
 
 module.exports.showUser = async (req, res, next) => {
     const { id } = req.params;
-    const user = await User.findById(id).populate('review');
-    user.worker
-        ? await user.populate('worker')
-        : await user.populate('client')
+    const user = await User.findById(id);
+    if (user.worker) {
+        await user.populate({
+            path: 'worker',
+            populate: [
+                'applying',
+                'accepted',
+                'ongoing',
+                'finished'
+            ]
+        });
+    }
+    else {
+        await user.populate({
+            path: 'client',
+            populate: [
+                'hiring',
+                'waiting',
+                'ongoing',
+                'reviewing',
+                'done'
+            ]
+        })
+    }
     res.status(200).json(user);
 }
 

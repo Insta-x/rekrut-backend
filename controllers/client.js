@@ -11,7 +11,7 @@ module.exports.dashboard = async (req, res, next) => {
 
 module.exports.offer = async (req, res, next) => {
     const userClient = await User.findById(req.user._id).populate('client')
-    const userWorker = await User.findById(req.body.worker).populate('worker')      // get worker id by JSON
+    const userWorker = await User.findById(req.body.worker).populate('worker')     // get worker id by JSON
     const jobId = req.body.job       // get job id by JSON
     const job = await Job.findById(jobId)
     if(job.status != 'HIRING')

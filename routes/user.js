@@ -13,6 +13,7 @@ router.post('/register', users.register);       // registers user
 
 router.route('/:id')
     .get(catchAsync(users.showUser))
+    .post(isLoggedIn, isUser, catchAsync(users.changePassword))     // change password
     .put(isLoggedIn, isUser, catchAsync(users.updateUser))
     .delete(isLoggedIn, isUser, catchAsync(users.deleteUser))
 

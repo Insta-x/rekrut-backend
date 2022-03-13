@@ -7,4 +7,6 @@ const router = express.Router();
 
 router.delete('/:id', isLoggedIn, catchAsync(notif.deleteNotif));
 
+router.post('/:id', isLoggedIn, catchAsync(notif.readNotif));
+
 module.exports = router;

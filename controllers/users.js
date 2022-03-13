@@ -62,7 +62,10 @@ module.exports.changePassword = async (req, res, next) => {
 
 module.exports.showUser = async (req, res, next) => {
     const { id } = req.params;
-    const user = await User.findById(id).populate('notif');
+    const user = await User.findById(id).populate('notif').populate({
+        path: 'review',
+        populate: 'author'
+    });
     if (user.worker) {
         await user.populate({
             path: 'worker',

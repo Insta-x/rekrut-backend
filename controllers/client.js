@@ -4,6 +4,11 @@ const Client = require('../models/client');
 const { pushNotif } = require('../utils/pushNotif');
 const ExpressError = require('../utils/ExpressError');
 
+module.exports.dashboard = async (req, res, next) => {
+    const workers = await User.find({ client : undefined })
+    res.status(200).json(workers)
+}
+
 module.exports.hire = async (req, res, next) => {
     const userClient = await User.findById(req.user._id).populate('client')
     const userWorker = await User.findById(req.body.worker).populate('worker')      // get worker id by JSON

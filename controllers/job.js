@@ -28,7 +28,7 @@ module.exports.deleteJob = async (req, res, next) => {
     const { id } = req.params;
     const job = await Job.findById(id);
     if (job.status !== 'HIRING')
-        return next(new ExpressError("Unable to delete job", 403))
+        return next(new ExpressError("Tidak dapat menghapus pekerjaan", 403))
     const user = await User.findById(job.author);
     await Client.findByIdAndUpdate(user.client,  { $pull: { hiring: id } });
     await job.deleteOne();

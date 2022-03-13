@@ -14,7 +14,7 @@ module.exports.apply = async (req, res, next) => {
     const jobId = req.body.job       // get job id by JSON
     const job = await Job.findById(jobId)
     if(job.registrants.includes(req.user._id))
-        return next(new ExpressError('Already registrant', 403))
+        return next(new ExpressError('Anda sudah terdaftar', 403))
     await pushNotif(
         `Hei! Ada pekerja yang baru saja mendaftar sebagai ${job.category}.`,
         `/job/${jobId}`,
@@ -88,7 +88,7 @@ module.exports.finishJob = async (req, res, next) => {
     const job = await Job.findById(jobId).populate('author')
     const userClient = await job.author.populate('client')
     if(job.status != 'ONGOING')
-        return next(new ExpressError('Not an ongoing job', 403))
+        return next(new ExpressError('Anda tidak dapat melakukan ini', 403))
     userClient.client.ongoing.pull(jobId)
     userClient.client.reviewing.push(jobId)
     job.status = 'REVIEWING'

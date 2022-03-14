@@ -5,7 +5,7 @@ const { isLoggedIn, isWorker, isJobExists, isJobChosen } = require('../middlewar
 
 const router = express.Router();
 
-router.get('/dashboard', isLoggedIn, isWorker, catchAsync(worker.dashboard))
+router.get('/dashboard', catchAsync(worker.dashboard))
 
 router.post('/apply', isLoggedIn, isWorker, isJobExists, catchAsync(worker.apply))
 

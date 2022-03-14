@@ -32,7 +32,8 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Review'
     }],
-    overallRating: Number
+    sumRating: Number,
+    rating: Number
 })
 
 userSchema.plugin(passportLocalMongoose, { usernameField: 'email' });

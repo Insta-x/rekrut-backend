@@ -17,16 +17,19 @@ module.exports.offerJob = async (req, res, next) => {
     console.log('jobid');
     const job = await Job.findById(jobId)
     console.log('getjob');
-    // if(job.status != 'HIRING')
-    //     return next(new ExpressError('Not hiring', 403))
-    // if (userWorker.client)
-    //     return next(new ExpressError('User is a client', 403));
-    // await pushNotif(
-    //     `Hei! Anda mendapat undangan untuk melamar sebagai ${job.category} di ${job.title}. Silakan melamar!`,
-    //     `/job/${jobId}`,
-    //     'important',
-    //     `${req.body.worker}`
-    // )
+    if(job.status != 'HIRING')
+        return next(new ExpressError('Not hiring', 403))
+    console.log('hiring');
+    if (userWorker.client)
+        return next(new ExpressError('User is a client', 403));
+    console.log('client');
+    await pushNotif(
+        `Hei! Anda mendapat undangan untuk melamar sebagai ${job.category} di ${job.title}. Silakan melamar!`,
+        `/job/${jobId}`,
+        'important',
+        `${req.body.worker}`
+    )
+    console.log('notif');
     res.status(200).json('Successfully offered job')
 }
 

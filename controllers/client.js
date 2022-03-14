@@ -9,6 +9,32 @@ module.exports.dashboard = async (req, res, next) => {
     res.status(200).json(workers)
 }
 
+module.exports.offer = async (req, res, next) => {
+    const userClient = await User.findById(req.user._id).populate('client')
+    const userWorker = await User.findById(req.body.worker).populate('worker')     // get worker id by JSON
+    const jobId = req.body.job       // get job id by JSON
+    const job = await Job.findById(jobId)
+    if(job.status != 'HIRING')
+        return next(new ExpressError('Not hiring', 403))
+    if (userWorker.client)
+        return next(new ExpressError('User is a client', 403));
+    userClient.client.hiring.pull(jobId)
+    userClient.client.waiting.push(jobId)
+    userWorker.worker.accepted.push(jobId)
+    job.status = 'WAITING'
+    job.chosen = req.body.worker
+    await pushNotif(
+        `Hei! Anda mendapat undangan untuk melamar sebagai ${job.category} di ${job.title}. Silakan melamar!`,
+        `/job/${jobId}`,
+        'important',
+        `${req.body.worker}`
+    )
+    await userClient.client.save()
+    await userWorker.worker.save()
+    await job.save()
+    res.status(200).json('Successfully offered job')
+}
+
 module.exports.hire = async (req, res, next) => {
     const userClient = await User.findById(req.user._id).populate('client')
     const userWorker = await User.findById(req.body.worker).populate('worker')      // get worker id by JSON
@@ -55,7 +81,7 @@ module.exports.reviewGood = async (req, res, next) => {
         `${job.author}`
     )
     await pushNotif(
-        `Kerja anda di ${job.name} sebagai ${job.category} telah selesai. Berikan review anda!`,
+        `Kerja anda di ${job.title} sebagai ${job.category} telah selesai. Berikan review anda!`,
         `/job/${jobId}`,
         'done all',
         `${job.chosen._id}`
@@ -77,7 +103,7 @@ module.exports.reviewBad = async (req, res, next) => {
     userClient.client.ongoing.push(jobId)
     job.status = 'ONGOING'
     await pushNotif(
-        `Hasil anda di ${job.name} sebagai ${job.category} masih belum selesai. Harap diperiksa lagi!`,
+        `Pekerjaan anda belum diterima oleh ${userClient.name}. Silakan lakukan revisi.`,
         `/job/${jobId}`,
         'rejected',
         `${job.chosen._id}`

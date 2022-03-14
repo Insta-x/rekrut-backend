@@ -46,9 +46,26 @@ module.exports.logout = (req, res, next) => {
     res.status(200).json('Successfully logged out');
 }
 
+module.exports.changePassword = async (req, res, next) => {
+    const { password } = req.body;
+    const user = await User.findById(req.params.id);
+    if (user) {
+        user.setPassword(password, async () => {
+            await user.save();
+            res.status(200).json('Password reset successfully');
+        })
+    }
+    else{
+        res.status(404).json('User not found');
+    }
+}
+
 module.exports.showUser = async (req, res, next) => {
     const { id } = req.params;
-    const user = await User.findById(id).populate('notif');
+    const user = await User.findById(id).populate('notif').populate({
+        path: 'review',
+        populate: 'author'
+    });
     if (user.worker) {
         await user.populate({
             path: 'worker',

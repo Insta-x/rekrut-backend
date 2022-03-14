@@ -11,7 +11,15 @@ module.exports.isLoggedIn = (req, res, next) => {
 module.exports.isUser = async (req, res, next) => {
     const { id } = req.params;
     if (!req.user._id.equals(id))
-        next(new ExpressError('You are not authorized', 401));
+        return next(new ExpressError('You are not authorized', 401));
+    next();
+}
+
+module.exports.isRelated = async (req, res, next) => {
+    const { id } = req.params;
+    const job = await Job.findById(id);
+    if (!req.user._id.equals(job.author) && !req.user._id.equals(job.chosen))
+        return next(new ExpressError('You are not authorized', 401));
     next();
 }
 

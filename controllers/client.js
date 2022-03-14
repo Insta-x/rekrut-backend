@@ -12,13 +12,14 @@ module.exports.dashboard = async (req, res, next) => {
 module.exports.offerJob = async (req, res, next) => {
     console.log('in');
     const userWorker = await User.findById(req.body.worker)     // get worker id by JSON
-    console.log('user');
+    console.log(userWorker);
     const jobId = req.body.job       // get job id by JSON
-    console.log('jobid');
+    console.log(jobId);
     const job = await Job.findById(jobId)
-    console.log('getjob');
-    if(job.status != 'HIRING')
+    console.log(job);
+    if(job.status != 'HIRING'){
         return next(new ExpressError('Not hiring', 403))
+    }
     console.log('hiring');
     // if ('client' in userWorker)
     //     return next(new ExpressError('User is a client', 403));

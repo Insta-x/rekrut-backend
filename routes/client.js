@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/dashboard', isLoggedIn, isClient, catchAsync(client.dashboard))
 
-router.post('/offer-job', isLoggedIn, isClient, isJobExists, isJobAuthor, catchAsync(client.offerJob))
+router.post('/offer', isLoggedIn, isClient, isJobExists, isJobAuthor, catchAsync(client.offerJob))
 
 router.post('/hire', isLoggedIn, isClient, isJobExists, isJobAuthor, catchAsync(client.hire))
 

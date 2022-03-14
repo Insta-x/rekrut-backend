@@ -13,3 +13,11 @@ module.exports.readNotif = async (req, res, next) => {
     await Notif.findByIdAndUpdate(id, {read: true});
     res.status(200).json('Notification successfully read');
 }
+
+module.exports.readAllNotif = async (req, res, next) => {
+    const user = await User.findById(req.user._id);
+    for (let notif of user.notif){
+        await Notif.findByIdAndUpdate(notif, {read: true});
+    }
+    res.status(200).json('All Notification read');
+}

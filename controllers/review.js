@@ -5,11 +5,13 @@ const { pushNotif } = require('../utils/pushNotif');
 
 module.exports.createReview = async (req, res, next) => {
     const { id } = req.params;
-    const review = new Review({ ...req.body });
+    const review = new Review({ ...req.body, author : req.user._id });
     const job = await Job.findById(id);
     const fromUser = await User.findById(req.user._id);
     const toUser = await User.findById(fromUser.worker ? job.author : job.chosen);
     toUser.review.push(review);
+    toUser.sumRating += review.rating
+    toUser.rating = sumRating / toUser.review.length
     await pushNotif(
         `Anda memperoleh 1 review baru.`,
         `/review/${jobId}`,     // FIX THIS

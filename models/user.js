@@ -16,6 +16,8 @@ const userSchema = new Schema({
         unique: true
     },
     bio: String,
+    profPic: Buffer,
+    profPicType: String,
     notif: [{
         type: Schema.Types.ObjectId,
         ref: 'Notification'
@@ -34,9 +36,14 @@ const userSchema = new Schema({
     }],
     sumRating: Number,
     rating: Number
-})
+}, { toJSON: { virtuals: true } })
 
 userSchema.plugin(passportLocalMongoose, { usernameField: 'email' });
+
+userSchema.virtual('profPicDataURL').get(function() {
+    if(this.profPic != null && this.profPicType != null)
+        return `data:${this.profPicType};charset=utf-8;base-64,${this.profPic.toString('base64')}`
+})
 
 userSchema.post('findOneAndDelete', async function (doc) {
     if (doc) {

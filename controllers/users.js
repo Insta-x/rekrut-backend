@@ -9,8 +9,10 @@ const changeUsername = err => err.message.replace('username', 'email');
 module.exports.register = async (req, res, next) => {
     try {
         const { password } = req.body;
+        req.body.profPic = new Buffer.from(req.body.profPic, 'base64')
         const user = new User({ ...req.body });
         if (req.body.isWorker && req.body.isWorker === true) {
+            req.body.cv = new Buffer.from(req.body.cv, 'base64')
             const worker = new Worker(req.body);
             await worker.save();
             user.worker = worker;

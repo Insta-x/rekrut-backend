@@ -16,7 +16,9 @@ const userSchema = new Schema({
         unique: true
     },
     bio: String,
-    profPic: Buffer,
+    profPic: {
+        type: Buffer
+    },
     profPicType: String,
     notif: [{
         type: Schema.Types.ObjectId,

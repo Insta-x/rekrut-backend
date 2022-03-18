@@ -16,6 +16,11 @@ const userSchema = new Schema({
         unique: true
     },
     bio: String,
+    website: String,
+    skill: String,
+    experience: String,
+    education: String,
+    award: String,
     profPic: {
         type: Buffer
     },

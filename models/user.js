@@ -21,10 +21,7 @@ const userSchema = new Schema({
     experience: String,
     education: String,
     award: String,
-    profPic: {
-        type: Buffer
-    },
-    profPicType: String,
+    profPic: String,
     notif: [{
         type: Schema.Types.ObjectId,
         ref: 'Notification'

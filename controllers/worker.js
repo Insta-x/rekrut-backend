@@ -16,7 +16,7 @@ module.exports.apply = async (req, res, next) => {
     if(job.registrants.includes(req.user._id))
         return next(new ExpressError('Already registrant', 403))
     await pushNotif(
-        `Hei! Ada pekerja yang baru saja mendaftar sebagai ${job.category}.`,
+        `${req.user.name} baru saja mendaftar untuk mengerjakan ${job.title}.`,
         `/job/${jobId}`,
         'important',
         `${job.author}`
@@ -41,14 +41,14 @@ module.exports.acceptJob = async (req, res, next) => {
     for (let regists of job.registrants){
         if (!regists.equals(req.user._id))
             await pushNotif(
-                `Anda belum terpilih menjadi ${job.category} di ${job.title}. Jangan patah semangat ya!`,
+                `Anda belum dipilih oleh ${userClient.name} untuk mengerjakan ${job.title}. Jangan patah semangat ya!`,
                 `/job/${jobId}`,
                 'rejected',
                 `${regists}`
             )
     }
     await pushNotif(
-        `Hore! Anda berhasil merekrut ${userWorker.name} sebagai ${job.category}.`,
+        `Anda berhasil merekrut ${userWorker.name} untuk mengerjakan ${job.title}.`,
         `/job/${jobId}`,
         'hired',
         `${job.author._id}`
@@ -71,7 +71,7 @@ module.exports.declineJob = async (req, res, next) => {
     job.chosen = undefined
     job.registrants.pull(req.user._id)
     await pushNotif(
-        `Kabar buruk! Anda gagal merekrut ${userWorker.name} sebagai ${job.category}.`,
+        `${userWorker.name} menolak untuk mengerjakan ${job.title}.`,
         `/job/${jobId}`,
         'rejected',
         `${job.author._id}`
@@ -93,7 +93,7 @@ module.exports.finishJob = async (req, res, next) => {
     userClient.client.reviewing.push(jobId)
     job.status = 'REVIEWING'
     await pushNotif(
-        `Pekerjaan ${userWorker.name} sebagai ${job.category} telah selesai. Silahkan diperiksa kembali.`,
+        `${userWorker.name} telah menyelesaikan pekerjaan ${job.title}. Tolong konfirmasi jika pekerjaan tersebut telah selesai atau belum.`,
         `/job/${jobId}`,
         'done all',
         `${job.author._id}`

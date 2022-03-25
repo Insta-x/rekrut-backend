@@ -20,7 +20,7 @@ module.exports.offerJob = async (req, res, next) => {
     if (userWorker.client)
         return next(new ExpressError('User is a client', 403));
     await pushNotif(
-        `Hei! Anda mendapat undangan untuk melamar sebagai ${job.category} di ${job.title}. Silakan melamar!`,
+        `Hei! Anda mendapat undangan untuk melamar oleh ${req.user.name} untuk mengerjakan ${job.title}. Silakan melamar!`,
         `/job/${jobId}`,
         'important',
         `${req.body.worker}`
@@ -45,7 +45,7 @@ module.exports.hire = async (req, res, next) => {
     job.chosen = req.body.worker
     await userClient.client.save()
     await pushNotif(
-        `Hore! Anda dipilih sebagai ${job.category} di ${job.title}. Segera lakukan konfirmasi!`,
+        `Hore! Anda dipilih oleh ${req.user.name} untuk mengerjakan ${job.title}. Segera lakukan konfirmasi!`,
         `/job/${jobId}`,
         'chosen',
         `${req.body.worker}`
@@ -68,13 +68,13 @@ module.exports.reviewGood = async (req, res, next) => {
     userWorker.worker.finished.push(jobId)
     job.status = 'DONE'
     await pushNotif(
-        `Kerja sama anda dengan ${userWorker.name} sebagai ${job.category} telah selesai. Berikan review anda!`,
+        `Kerja sama anda dengan ${userWorker.name} dalam pekerjaan ${job.title} telah selesai. Berikan review mengenai performa kerja ${userWorker.name}!`,
         `/job/${jobId}`,
         'done all',
         `${job.author}`
     )
     await pushNotif(
-        `Kerja anda di ${job.title} sebagai ${job.category} telah selesai. Berikan review anda!`,
+        `${req.user.name} puas dengan performa anda dalam pekerjaan ${job.title}. Berikan review kepada ${req.user.name}!`,
         `/job/${jobId}`,
         'done all',
         `${job.chosen._id}`
@@ -96,7 +96,7 @@ module.exports.reviewBad = async (req, res, next) => {
     userClient.client.ongoing.push(jobId)
     job.status = 'ONGOING'
     await pushNotif(
-        `Pekerjaan anda belum diterima oleh ${userClient.name}. Silakan lakukan revisi.`,
+        `${req.user.name} belum puas dengan performa anda dalam pekerjaan ${job.title}. Silakan lakukan revisi.`,
         `/job/${jobId}`,
         'rejected',
         `${job.chosen._id}`
